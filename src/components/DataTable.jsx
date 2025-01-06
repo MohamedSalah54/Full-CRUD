@@ -1,6 +1,6 @@
 import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { useData } from './DataContext'; 
+import { useData } from './DataContext';
 import Toolbar from './Toolbar';
 import { useState } from 'react';
 
@@ -19,6 +19,7 @@ export default function DataTable() {
   const { rows, loading } = useData();
   const [selectedId, setSelectedId] = useState(null);
 
+  // تحديث selectedId عند اختيار row
   const handleRowSelection = (selectionModel) => {
     if (selectionModel.length > 0) {
       const selectedRowId = selectionModel[0]; // أخذ أول عنصر في الاختيار
@@ -33,7 +34,7 @@ export default function DataTable() {
 
   return (
     <div>
-      <Toolbar selectedId={selectedId}/>
+      <Toolbar selectedId={selectedId} rows={rows}/> {/* تمرير rows إلى Toolbar */}
       <Paper sx={{ height: 400, width: '100%', marginTop: 2 }}>
         <DataGrid
           rows={rows}

@@ -95,31 +95,34 @@ export const DataProvider = ({ children }) => {
       toast.error('Network error! Please try again later.');
     }
   };
-  
-  const updateRow = async (id, updatedData) => {
-    try {
-      const response = await fetch(`https://677bd9b020824100c07b0032.mockapi.io/api/employee/namesemployee/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
-      });
 
-      if (response.ok) {
-        const updatedRow = await response.json();
-        setRows((prevRows) => prevRows.map((row) => (row.id === id ? updatedRow : row)));
-        toast.success('Employee updated successfully!');
-      } else {
-        toast.error('Failed to update employee.');
-      }
-    } catch (error) {
-      toast.error('Network error! Please try again later.');
+  // دالة updateRow داخل DataProvider
+const updateRow = async (id, updatedData) => {
+  try {
+    const response = await fetch(`https://677bd9b020824100c07b0032.mockapi.io/api/employee/namesemployee/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (response.ok) {
+      const updatedRow = await response.json();
+      setRows((prevRows) => prevRows.map((row) => (row.id === id ? updatedRow : row)));
+      toast.success('Employee updated successfully!');
+    } else {
+      toast.error('Failed to update employee.');
     }
-  };
+  } catch (error) {
+    toast.error('Network error! Please try again later.');
+  }
+};
+
+
 
   return (
-    <DataContext.Provider value={{ rows, loading, addRow, deleteRow, updateRow }}>
+    <DataContext.Provider value={{ rows, loading, addRow, deleteRow , updateRow}}>
       {children}
     </DataContext.Provider>
   );
