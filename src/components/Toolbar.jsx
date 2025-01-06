@@ -6,8 +6,8 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useData } from "./DataContext"; 
-import toast, { Toaster } from "react-hot-toast"; 
+import { useData } from "./DataContext";
+import toast, { Toaster } from "react-hot-toast";
 
 const modalStyle = {
     position: "absolute",
@@ -22,17 +22,22 @@ const modalStyle = {
     textAlign: "center",
 };
 
-const Toolbar = () => {
+const Toolbar = ({ selectedId }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false); // حالة المودال لتأكيد الحذف
+    const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
     const [newData, setNewData] = useState({ firstName: "", lastName: "" });
+    const [deleteId, setDeleteId] = useState(null); 
     const { addRow, deleteRow } = useData();
 
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false);
 
-    const handleOpenDeleteConfirm = () => setIsDeleteConfirmOpen(true); // فتح مودال تأكيد الحذف
-    const handleCloseDeleteConfirm = () => setIsDeleteConfirmOpen(false); // إغلاق مودال تأكيد الحذف
+    const handleOpenDeleteConfirm = (id) => {
+        setDeleteId(id); 
+        setIsDeleteConfirmOpen(true);
+    };
+
+    const handleCloseDeleteConfirm = () => setIsDeleteConfirmOpen(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -46,15 +51,15 @@ const Toolbar = () => {
             setNewData({ NAME_ONE: "", NAME_TWO: "", EMAIL: "", AGE: "", JOINING_DATE: "", IS_ACTIVE_Y_N: "" });
             handleCloseModal();
         } else {
-            toast.error("Please fill all fields!"); 
+            toast.error("Please fill all fields!");
         }
     };
 
     const handleDelete = () => {
-        // هنا تضع الكود الخاص بالحذف
-        deleteRow(); // افترض أن هذه هي وظيفة الحذف
-        setIsDeleteConfirmOpen(false);
-        toast.success("Item deleted successfully");
+        if (deleteId) {
+            deleteRow(deleteId); 
+            setIsDeleteConfirmOpen(false);
+        }
     };
 
     return (
@@ -66,18 +71,17 @@ const Toolbar = () => {
                     <IoMdAdd className="btn-icon" />
                     Add New
                 </button>
-                <button className="custom-btn delete-btn" onClick={handleOpenDeleteConfirm}>
+                <button className="custom-btn delete-btn" onClick={() => handleOpenDeleteConfirm(selectedId)}>
                     <MdDelete className="btn-icon" />
                     Delete
                 </button>
+
 
                 <button className="custom-btn update-btn">
                     <IoPencilSharp className="btn-icon" />
                     Update
                 </button>
             </div>
-
-            {/* مودال إضافة البيانات */}
             <Modal open={isModalOpen} onClose={handleCloseModal} aria-labelledby="add-new-modal" aria-describedby="add-new-form">
                 <Box sx={modalStyle}>
                     <h3 id="add-new-modal">Add New Employee</h3>
@@ -134,8 +138,6 @@ const Toolbar = () => {
                     </Button>
                 </Box>
             </Modal>
-
-            {/* مودال تأكيد الحذف */}
             <Modal open={isDeleteConfirmOpen} onClose={handleCloseDeleteConfirm}>
                 <Box sx={modalStyle}>
                     <h3>Are you sure you want to delete this item?</h3>

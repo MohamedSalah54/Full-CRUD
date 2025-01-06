@@ -72,11 +72,54 @@ export const DataProvider = ({ children }) => {
   };
 
  
- 
+  const deleteRow = async (id) => {
+    if (!id) {
+      toast.error('Invalid ID provided.');
+      return;
+    }
   
+    try {
+      const response = await fetch(`https://677bd9b020824100c07b0032.mockapi.io/api/employee/namesemployee/${id}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+        toast.success('Employee deleted successfully!');
+      } else {
+        const errorData = await response.json();
+        console.error('Error:', errorData);
+        toast.error(`Failed to delete employee: ${errorData.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      toast.error('Network error! Please try again later.');
+    }
+  };
+  
+  const updateRow = async (id, updatedData) => {
+    try {
+      const response = await fetch(`https://677bd9b020824100c07b0032.mockapi.io/api/employee/namesemployee/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (response.ok) {
+        const updatedRow = await response.json();
+        setRows((prevRows) => prevRows.map((row) => (row.id === id ? updatedRow : row)));
+        toast.success('Employee updated successfully!');
+      } else {
+        toast.error('Failed to update employee.');
+      }
+    } catch (error) {
+      toast.error('Network error! Please try again later.');
+    }
+  };
 
   return (
-    <DataContext.Provider value={{ rows, loading, addRow }}>
+    <DataContext.Provider value={{ rows, loading, addRow, deleteRow, updateRow }}>
       {children}
     </DataContext.Provider>
   );
