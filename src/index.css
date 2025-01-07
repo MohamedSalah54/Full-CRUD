@@ -81,3 +81,14 @@
   }
   
 
+  .loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .loader-paper {
+    position: relative;
+  }
+  
